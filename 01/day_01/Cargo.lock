@@ -12,3 +12,4 @@ dependencies = [
 [[package]]
 name = "read_file"
 version = "0.1.0"
+source = "git+ssh://skyline/git/read_file.git#6d82057b460612d183ba1dcfcc8404784565b00f"
