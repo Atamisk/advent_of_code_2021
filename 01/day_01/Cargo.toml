@@ -6,5 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-read_file = {git = "ssh://skyline/git/read_file.git"}
+read_file = {git = "https://github.com/Atamisk/read_file.git"}
 
