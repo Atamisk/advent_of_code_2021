@@ -32,6 +32,28 @@ impl Grid {
             self.increment_cell(point);
         }
     }
+
+    #[cfg(test)]
+    fn print_cells(&self){
+        for row in self.cells.iter(){
+            println!("{:?}", row);
+        }
+    }
+
+    pub fn count_intersections(&self) -> usize {
+        #[cfg(test)]
+        self.print_cells();
+
+        self.cells
+            .iter()
+            .map(|row| -> usize{
+                row
+                    .iter()
+                    .filter(|x| **x > 1)
+                    .count()
+            })
+            .sum()
+    }
 }
 
 #[cfg(test)]

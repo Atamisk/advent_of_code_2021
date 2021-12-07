@@ -1,5 +1,6 @@
 use std::cmp;
 
+#[derive(Clone)]
 pub struct Vent{
     start: (usize, usize),
     end: (usize, usize),
@@ -30,7 +31,7 @@ impl Vent{
                 (self.end.0..=self.start.0).rev().collect()
             }
             else{
-                vec![self.start.1; target_length]
+                vec![self.start.0; target_length]
             }
         };
         let y_rng: Vec<usize> = {
@@ -47,6 +48,16 @@ impl Vent{
         assert_eq!(x_rng.len(), target_length);
         assert_eq!(y_rng.len(), target_length);
         x_rng.into_iter().zip(y_rng.into_iter()).collect()
+    }
+
+    pub fn max_values(&self) -> (usize, usize) {
+        let max_x = cmp::max(self.start.0, self.end.0);
+        let max_y = cmp::max(self.start.1, self.end.1);
+        (max_x, max_y)
+    }
+    
+    pub fn is_ortho(&self) -> bool {
+        self.start.0 == self.end.0 || self.start.1 == self.end.1
     }
 
     pub fn contains(&self, pt: (usize, usize)) -> bool {
@@ -79,7 +90,7 @@ impl Vent{
     }
 }
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub enum Slope{
     HorizPos,
     HorizNeg, 
