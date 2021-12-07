@@ -19,7 +19,7 @@ impl Vent{
         }
     }
 
-    fn get_points(&self) -> Vec<(usize, usize)>{
+    pub fn get_points(&self) -> Vec<(usize, usize)>{
         let target_length = cmp::max( (self.start.0 as isize - self.end.0 as isize).abs(),
                                  (self.start.1 as isize - self.end.1 as isize).abs()) as usize + 1;
         let x_rng: Vec<usize> = {

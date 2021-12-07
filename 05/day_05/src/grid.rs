@@ -1,3 +1,5 @@
+use crate::vent::*;
+
 pub struct Grid {
     cells: Vec<Vec<usize>>,
 }
@@ -24,6 +26,12 @@ impl Grid {
         let cell = self.get_cell_mut(pt).expect("Cell not found");
         *cell += 1;
     }
+    pub fn increment_vent(&mut self, vent: Vent) {
+        let points = vent.get_points();
+        for point in points{
+            self.increment_cell(point);
+        }
+    }
 }
 
 #[cfg(test)]
@@ -39,5 +47,15 @@ mod tests{
         let mut grid = Grid::new(10,15);
         grid.increment_cell((5,4));
         assert_eq!(grid.get_cell((5,4)), Some(1));
+    }
+    #[test]
+    fn test_vent_increment(){
+        let mut grid = Grid::new(10,15);
+        let vent = Vent::new((2,2), (4,4));
+        grid.increment_vent(vent);
+        assert_eq!(grid.get_cell((2,2)), Some(1));
+        assert_eq!(grid.get_cell((3,3)), Some(1));
+        assert_eq!(grid.get_cell((4,4)), Some(1));
+        assert_eq!(grid.get_cell((4,5)), Some(0));
     }
 }
