@@ -1,3 +1,5 @@
+use std::cmp;
+
 pub struct Vent{
     start: (usize, usize),
     end: (usize, usize),
@@ -15,6 +17,36 @@ impl Vent{
             end,
             slope
         }
+    }
+
+    fn get_points(&self) -> Vec<(usize, usize)>{
+        let target_length = cmp::max( (self.start.0 as isize - self.end.0 as isize).abs(),
+                                 (self.start.1 as isize - self.end.1 as isize).abs()) as usize + 1;
+        let x_rng: Vec<usize> = {
+            if self.start.0 < self.end.0 {
+                (self.start.0..=self.end.0).collect()
+            }
+            else if self.start.0 > self.end.0 {
+                (self.end.0..=self.start.0).rev().collect()
+            }
+            else{
+                vec![self.start.1; target_length]
+            }
+        };
+        let y_rng: Vec<usize> = {
+            if self.start.1 < self.end.1 {
+                (self.start.1..=self.end.1).collect()
+            }
+            else if self.start.1 > self.end.1{
+                (self.end.1..=self.start.1).rev().collect()
+            }
+            else{
+                vec![self.start.1; target_length]
+            }
+        };
+        assert_eq!(x_rng.len(), target_length);
+        assert_eq!(y_rng.len(), target_length);
+        x_rng.into_iter().zip(y_rng.into_iter()).collect()
     }
 
     pub fn contains(&self, pt: (usize, usize)) -> bool {
@@ -101,5 +133,22 @@ mod tests {
         assert!(!(vent.contains((5,1))));
         assert!(!(vent.contains((11,0))));
         assert!(!(vent.contains((11,0))));
+    }
+    #[test]
+    fn test_get_points(){
+        let vent = Vent::new((10,0), (0,0));
+        let mut line = vent.get_points().into_iter();
+        assert_eq!(line.next(), Some((10,0)));
+        assert_eq!(line.next(), Some((9,0)));
+        assert_eq!(line.next(), Some((8,0)));
+        assert_eq!(line.next(), Some((7,0)));
+        assert_eq!(line.next(), Some((6,0)));
+        assert_eq!(line.next(), Some((5,0)));
+        assert_eq!(line.next(), Some((4,0)));
+        assert_eq!(line.next(), Some((3,0)));
+        assert_eq!(line.next(), Some((2,0)));
+        assert_eq!(line.next(), Some((1,0)));
+        assert_eq!(line.next(), Some((0,0)));
+
     }
 }
