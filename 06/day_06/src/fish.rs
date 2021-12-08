@@ -1,35 +1,33 @@
-#[derive(Clone, Copy)]
-pub struct Fish{
-    timer: u8
+use std::collections::VecDeque;
+
+#[derive(Clone)]
+pub struct Fish {
+    ring: VecDeque<u128>    
 }
 
 impl Fish{
-    pub fn new(timer: u8) -> Self{
+    pub fn new() -> Self {
         Self{
-            timer
+            ring: VecDeque::from(vec![0; 9])
         }
     }
-    pub fn new_child() -> Self{
-        Self{
-            timer: 8
-        }
+    fn increment(&mut self, i: u8) {
+        self.ring[i as usize] += 1;
     }
-    pub fn tick(&mut self) -> TimerState{
-        if self.timer == 0 {
-            self.timer = 6;
-            TimerState::Reset
+    pub fn from_ints(ints: Vec<u8>) -> Self{
+        let mut out = Self::new();
+        for i in ints {
+            out.increment(i);
         }
-        else {
-            self.timer -= 1;
-            TimerState::Continue
-        }
+        out
     }
-}
-
-#[derive(Debug, Eq, PartialEq)]
-pub enum TimerState{
-    Continue,
-    Reset
+    pub fn total(&self) -> u128{
+        self.ring.iter().sum()
+    }
+    pub fn tick(&mut self){
+        self.ring.rotate_left(1);
+        self.ring[6] += self.ring[8];
+    }
 }
 
 #[cfg(test)]
@@ -37,16 +35,6 @@ mod tests {
     use super::*;
     #[test]
     fn test_timer() {
-       let mut fish = Fish::new_child();
-       assert_eq!(fish.tick(), TimerState::Continue);
-       assert_eq!(fish.tick(), TimerState::Continue);
-       assert_eq!(fish.tick(), TimerState::Continue);
-       assert_eq!(fish.tick(), TimerState::Continue);
-       assert_eq!(fish.tick(), TimerState::Continue);
-       assert_eq!(fish.tick(), TimerState::Continue);
-       assert_eq!(fish.tick(), TimerState::Continue);
-       assert_eq!(fish.tick(), TimerState::Continue);
-       assert_eq!(fish.tick(), TimerState::Reset);
     }
 }
 

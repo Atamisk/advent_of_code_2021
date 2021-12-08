@@ -13,30 +13,20 @@ fn main() {
     println!("Part 2: {}", sol_2);
 }
 
-fn parse_input(input: &str) -> Vec<Fish> {
+fn parse_input(input: &str) -> Vec<u8> {
     input
         .trim()
         .split(",")
-        .map(|x| Fish::new(x.parse().unwrap()))
+        .map(|x| x.parse().unwrap())
         .collect()
 }
 
-fn solve_1(mut fish: Vec<Fish>, gens: usize) -> usize {
+fn solve_1(fish: Vec<u8>, gens: usize) -> u128 {
+    let mut fishes = Fish::from_ints(fish);
     for _ in 0..gens {
-        let mut new_kids = fish
-            .iter_mut()
-            .fold(Vec::new(), |mut acc: Vec<Fish>, fishlet: &mut Fish| -> Vec<Fish> {
-                match fishlet.tick(){
-                    TimerState::Continue => acc,
-                    TimerState::Reset    => {
-                        acc.push(Fish::new_child());
-                        acc
-                    }
-                }
-            });
-        fish.append(&mut new_kids);
+        fishes.tick();
     }
-    fish.iter().count()
+    fishes.total()
 }
 
 #[cfg(test)]
