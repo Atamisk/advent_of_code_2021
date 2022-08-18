@@ -1,0 +1,17 @@
+process: 
+
+count segment frequencies. 
+	** b determined, unique frequency
+	** e determined, unique frequency
+	** f determined, unique frequency
+
+Find 1, it's the digit of length 2. 1 contains c and f. 
+	** c determined. Process of elimination as we already know f
+	** a determined. a has the same frequency as c and is not contained in 1. 
+
+Find 4, it's the digit of length 4. 1 contains b,c,d,f
+	** d determined, we already know b,c,f
+	** g determined, we know all other letters. 
+
+
+

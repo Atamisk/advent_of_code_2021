@@ -1,0 +1,7 @@
+a: 8  (Deduced from c)
+b: 6**
+c: 8  (Derived from 1)
+d: 7  (Derived from 4)
+e: 4**
+f: 9**
+g: 7  (Process of elimination)
