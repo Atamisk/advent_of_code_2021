@@ -18,7 +18,7 @@ pub fn part_two(fname: &String) -> usize {
 
     //determine first three uniquely identifiable translations. 
     let segment_freq = count_segment_freq(lhs);
-    let (tru_b, tru_e, tru_f) = get_unique_segments(segment_freq);
+    let (tru_b, tru_e, tru_f) = get_unique_segments(&segment_freq);
     translator.insert('b', tru_b);
     translator.insert('e', tru_e);
     translator.insert('f', tru_f);
@@ -26,6 +26,8 @@ pub fn part_two(fname: &String) -> usize {
     //determine letters based on unique numbers
     let (one, four) = get_unique_digits(rhs);
     println!("({}, {})", one, four);
+    let tru_c = deduce_c(one, &tru_f);
+    let tru_a = deduce_a(&segment_freq, &tru_c);
     //end of testing code
     42
 }
@@ -40,7 +42,7 @@ fn process_line_p1(line: &String) -> usize {
         .sum()
 }
 
-fn get_unique_segments(map: HashMap<char, usize>) -> (char, char, char) {
+fn get_unique_segments(map: &HashMap<char, usize>) -> (char, char, char) {
     let mut b = 'h';
     let mut e = 'h';
     let mut f = 'h';
@@ -102,4 +104,13 @@ fn is_unique_length(length: usize) -> bool {
 
 fn digit_str_to_digits (tgt: &str) -> Vec<&str> {
     tgt.trim().split_whitespace().collect()
+}
+
+fn deduce_c(one: &str, tru_f: &char) -> char {
+    one.chars().find(|chr| chr != tru_f).unwrap()
+}
+
+fn deduce_a(segs: &HashMap<char, usize>, tru_c: &char) -> char{
+    let mut sc = segs.iter().filter(|&(k,&v)| v == 8 && k != tru_c);
+    *sc.next().unwrap().0
 }
