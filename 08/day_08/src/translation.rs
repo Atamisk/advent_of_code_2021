@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-pub fn get_translator(lhs: &str, rhs: &str) -> HashMap<char, char>{
+pub fn get_translator(lhs: &str) -> HashMap<char, char>{
     let mut translator: HashMap<char, char> = HashMap::new();
 
     //determine first three uniquely identifiable translations. 
@@ -11,7 +11,7 @@ pub fn get_translator(lhs: &str, rhs: &str) -> HashMap<char, char>{
     translator.insert(tru_f, 'f');
     
     //determine letters based on unique numbers
-    let (one, four) = get_unique_digits(rhs);
+    let (one, four) = get_unique_digits(lhs);
     let tru_c = deduce_c(one, &tru_f);
     let tru_a = deduce_a(&segment_freq, &tru_c);
     let tru_d = deduce_d(four, &tru_b, &tru_c, &tru_f);
