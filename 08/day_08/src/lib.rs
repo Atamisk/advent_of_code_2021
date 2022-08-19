@@ -29,8 +29,13 @@ fn process_line_p1(line: &String) -> usize {
 }
 
 fn process_line_p2(line: &String) -> usize {
-    let mut translator: HashMap<char, char> = HashMap::new();
     let (lhs, rhs) = extract_halves(&line);
+    let translator = get_translator(lhs, rhs);
+    42
+}
+
+fn get_translator(lhs: &str, rhs: &str) -> HashMap<char, char>{
+    let mut translator: HashMap<char, char> = HashMap::new();
 
     //determine first three uniquely identifiable translations. 
     let segment_freq = count_segment_freq(lhs);
@@ -41,7 +46,6 @@ fn process_line_p2(line: &String) -> usize {
     
     //determine letters based on unique numbers
     let (one, four) = get_unique_digits(rhs);
-    println!("({}, {})", one, four);
     let tru_c = deduce_c(one, &tru_f);
     let tru_a = deduce_a(&segment_freq, &tru_c);
     let tru_d = deduce_d(four, &tru_b, &tru_c, &tru_f);
@@ -49,9 +53,10 @@ fn process_line_p2(line: &String) -> usize {
     translator.insert(tru_a, 'a');
     translator.insert(tru_d, 'd');
 
+    //determine final unknown letter. 
     let tru_g = deduce_g(&translator);
     translator.insert(tru_g, 'g');
-    42
+    translator
 }
 
 fn get_unique_segments(map: &HashMap<char, usize>) -> (char, char, char) {
