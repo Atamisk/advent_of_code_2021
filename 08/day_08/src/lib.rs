@@ -1,5 +1,5 @@
 use read_file;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 /// Runs part one functionality
 pub fn part_one(fname: &String) -> usize {
@@ -13,6 +13,22 @@ pub fn part_two(fname: &String) -> usize {
     let mut lines = read_file::get_lines(fname);
     //testing code
     let line = lines.next().unwrap().unwrap();
+    process_line_p2(&line);
+    //end of testing code
+    42
+}
+
+fn process_line_p1(line: &String) -> usize {
+    digit_str_to_digits(extract_halves(line).1)
+        .into_iter()
+        .map(|x| -> usize {
+            let length = x.chars().count();
+            is_unique_length(length).into()
+        })
+        .sum()
+}
+
+fn process_line_p2(line: &String) -> usize {
     let mut translator: HashMap<char, char> = HashMap::new();
     let (lhs, rhs) = extract_halves(&line);
 
@@ -28,18 +44,8 @@ pub fn part_two(fname: &String) -> usize {
     println!("({}, {})", one, four);
     let tru_c = deduce_c(one, &tru_f);
     let tru_a = deduce_a(&segment_freq, &tru_c);
-    //end of testing code
+    let tru_d = deduce_d(four, &tru_b, &tru_c, &tru_f);
     42
-}
-
-fn process_line_p1(line: &String) -> usize {
-    digit_str_to_digits(extract_halves(line).1)
-        .into_iter()
-        .map(|x| -> usize {
-            let length = x.chars().count();
-            is_unique_length(length).into()
-        })
-        .sum()
 }
 
 fn get_unique_segments(map: &HashMap<char, usize>) -> (char, char, char) {
@@ -113,4 +119,12 @@ fn deduce_c(one: &str, tru_f: &char) -> char {
 fn deduce_a(segs: &HashMap<char, usize>, tru_c: &char) -> char{
     let mut sc = segs.iter().filter(|&(k,&v)| v == 8 && k != tru_c);
     *sc.next().unwrap().0
+}
+
+fn deduce_d(four: &str, tru_b: &char, tru_c: &char, tru_f: &char) -> char {
+    let mut set: HashSet<char> = four.chars().collect();
+    set.remove(tru_b);
+    set.remove(tru_c);
+    set.remove(tru_f);
+    set.into_iter().next().unwrap()
 }
