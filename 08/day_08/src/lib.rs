@@ -35,9 +35,9 @@ fn process_line_p2(line: &String) -> usize {
     //determine first three uniquely identifiable translations. 
     let segment_freq = count_segment_freq(lhs);
     let (tru_b, tru_e, tru_f) = get_unique_segments(&segment_freq);
-    translator.insert('b', tru_b);
-    translator.insert('e', tru_e);
-    translator.insert('f', tru_f);
+    translator.insert(tru_b, 'b');
+    translator.insert(tru_e, 'e');
+    translator.insert(tru_f, 'f');
     
     //determine letters based on unique numbers
     let (one, four) = get_unique_digits(rhs);
@@ -45,6 +45,12 @@ fn process_line_p2(line: &String) -> usize {
     let tru_c = deduce_c(one, &tru_f);
     let tru_a = deduce_a(&segment_freq, &tru_c);
     let tru_d = deduce_d(four, &tru_b, &tru_c, &tru_f);
+    translator.insert(tru_c, 'c');
+    translator.insert(tru_a, 'a');
+    translator.insert(tru_d, 'd');
+
+    let tru_g = deduce_g(&translator);
+    translator.insert(tru_g, 'g');
     42
 }
 
@@ -127,4 +133,10 @@ fn deduce_d(four: &str, tru_b: &char, tru_c: &char, tru_f: &char) -> char {
     set.remove(tru_c);
     set.remove(tru_f);
     set.into_iter().next().unwrap()
+}
+
+fn deduce_g(translator: &HashMap<char, char>) -> char {
+    let fullset: HashSet<char> = ['a', 'b', 'c', 'd', 'e', 'f', 'g'].into();
+    let known: HashSet<char> = translator.keys().map(|x| *x).collect();
+    *fullset.difference(&known).next().unwrap()
 }
