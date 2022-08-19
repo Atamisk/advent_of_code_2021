@@ -13,11 +13,19 @@ pub fn part_two(fname: &String) -> usize {
     let mut lines = read_file::get_lines(fname);
     //testing code
     let line = lines.next().unwrap().unwrap();
+    let mut translator: HashMap<char, char> = HashMap::new();
     let (lhs, rhs) = extract_halves(&line);
+
+    //determine first three uniquely identifiable translations. 
     let segment_freq = count_segment_freq(lhs);
-    println!("{:?}", segment_freq);
-    let first_segments = get_unique_segments(segment_freq);
-    println!("{:?}", first_segments);
+    let (tru_b, tru_e, tru_f) = get_unique_segments(segment_freq);
+    translator.insert('b', tru_b);
+    translator.insert('e', tru_e);
+    translator.insert('f', tru_f);
+    
+    //determine letters based on unique numbers
+    let (one, four) = get_unique_digits(rhs);
+    println!("({}, {})", one, four);
     //end of testing code
     42
 }
@@ -45,6 +53,21 @@ fn get_unique_segments(map: HashMap<char, usize>) -> (char, char, char) {
         }
     }
     (b,e,f)
+}
+
+fn get_unique_digits(rhs: &str) -> (&str, &str) {
+    let digits = digit_str_to_digits(rhs);
+    let mut one = "";
+    let mut four = "";
+    for digit in digits{
+        let length = digit.chars().count();
+        if length == 2 {
+            one = digit;
+        } else if length == 4 {
+            four = digit
+        }
+    }
+    (one, four)
 }
 
 fn count_segment_freq(digits: &str) -> HashMap<char, usize> {
