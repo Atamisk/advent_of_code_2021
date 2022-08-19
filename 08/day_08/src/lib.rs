@@ -1,12 +1,21 @@
 use read_file;
+use std::collections::HashMap;
 
+/// Runs part one functionality
 pub fn part_one(fname: &String) -> usize {
     read_file::get_lines(fname)
         .map(|line| process_line_p1(&line.unwrap()))
         .sum()
 }
 
+/// Handles part two functionality
 pub fn part_two(fname: &String) -> usize {
+    let mut lines = read_file::get_lines(fname);
+    //testing code
+    let line = lines.next().unwrap().unwrap();
+    let halves = line_to_digits(&line);
+    let lhs = halves.0;
+    //end of testing code
     42
 }
 
@@ -18,6 +27,20 @@ fn process_line_p1(line: &String) -> usize {
             is_unique_length(length).into()
         })
         .sum()
+}
+
+fn count_segment_freq(digits: &str) -> HashMap<char, usize> {
+    let mut map = HashMap::new();
+    for x in ['a', 'b', 'c', 'd', 'e', 'f', 'g'] {
+        map.insert(x,0);
+    }
+    for chr in digits.chars() {
+        match map.get_mut(&chr) {
+            Some(e) => {*e += 1},
+            None => (),
+        }
+    }
+    map
 }
 
 fn is_unique_length(length: usize) -> bool {
