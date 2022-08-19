@@ -1,5 +1,10 @@
 use std::collections::{HashMap, HashSet};
 
+pub fn translate(lhs: &str, rhs: &str) -> usize{
+    let translator = get_translator(lhs);
+    42
+}
+
 pub fn get_translator(lhs: &str) -> HashMap<char, char>{
     let mut translator: HashMap<char, char> = HashMap::new();
 

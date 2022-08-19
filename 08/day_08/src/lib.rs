@@ -32,8 +32,7 @@ fn process_line_p1(line: &String) -> usize {
 
 fn process_line_p2(line: &String) -> usize {
     let (lhs, rhs) = extract_halves(&line);
-    let translator = get_translator(lhs);
-    42
+    translate(lhs, rhs)
 }
 
 
