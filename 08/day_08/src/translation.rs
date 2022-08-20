@@ -1,8 +1,13 @@
 use std::collections::{HashMap, HashSet};
+use std::convert::TryInto;
 
-pub fn translate(lhs: &str, rhs: &str) -> usize{
-    let translator = get_translator(lhs);
-    42
+pub fn translate(translator: HashMap<char, char>, rhs: &str) -> usize{
+    let digits = digit_str_to_digits(rhs);
+    digits
+        .iter()
+        .enumerate()
+        .map(|(i, digit)| translate_digit(&translator, digit) * 10_usize.pow((3-i).try_into().unwrap()))
+        .sum()
 }
 
 pub fn get_translator(lhs: &str) -> HashMap<char, char>{
@@ -32,6 +37,29 @@ pub fn get_translator(lhs: &str) -> HashMap<char, char>{
 
 pub fn digit_str_to_digits (tgt: &str) -> Vec<&str> {
     tgt.trim().split_whitespace().collect()
+}
+
+fn translate_digit(translator: &HashMap<char, char>, digit: &str) -> usize{
+    let right_digits: HashMap<&str, usize> = [
+        ("abcefg" ,  0), 
+        ("cf"     ,  1), 
+        ("acdeg"  ,  2),
+        ("acdfg"  ,  3),
+        ("bcdf"   ,  4),
+        ("abdfg"  ,  5),
+        ("abdefg" ,  6),
+        ("acf"    ,  7),
+        ("abcdefg",  8),
+        ("abcdfg" ,  9) 
+    ].into();
+    let mut translated_digit: Vec<char> = digit
+        .chars()
+        .map(|x| *translator.get(&x).unwrap())
+        .collect();
+    translated_digit.sort();
+    let trans_digit_str = translated_digit.iter().collect::<String>();
+    let digit_out = *right_digits.get(&trans_digit_str[..]).unwrap();
+    digit_out
 }
 
 fn get_unique_segments(map: &HashMap<char, usize>) -> (char, char, char) {

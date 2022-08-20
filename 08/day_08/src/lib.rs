@@ -12,12 +12,11 @@ pub fn part_one(fname: &String) -> usize {
 
 /// Handles part two functionality
 pub fn part_two(fname: &String) -> usize {
-    let mut lines = read_file::get_lines(fname);
-    //testing code
-    let line = lines.next().unwrap().unwrap();
-    process_line_p2(&line);
-    //end of testing code
-    42
+    let lines = read_file::get_lines(fname);
+    let total = lines
+        .map(|line| process_line_p2(&line.unwrap()))
+        .sum();
+    total
 }
 
 fn process_line_p1(line: &String) -> usize {
@@ -32,7 +31,8 @@ fn process_line_p1(line: &String) -> usize {
 
 fn process_line_p2(line: &String) -> usize {
     let (lhs, rhs) = extract_halves(&line);
-    translate(lhs, rhs)
+    let translator = get_translator(lhs);
+    translate(translator, rhs)
 }
 
 
