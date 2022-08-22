@@ -42,6 +42,37 @@ impl GameBoard {
         self.last_line = tmp_line;
         self.this_line_id += 1;
     }
+    fn find_low_points(&self) -> usize {
+        let line = self.this_line.as_ref().unwrap();
+        let mut frames = line.iter().enumerate();
+        let mut current_frame = frames.next();
+        let mut next_frame = frames.next();
+        let mut last_frame: Option<(usize, &usize)> = None;
+        let mut risk = 0;
+        while let Some((i, frame)) = current_frame {
+            let next_frame_val = next_frame.unwrap_or((0, &10)).1;
+            let last_frame_val = last_frame.unwrap_or((0, &10)).1;
+            if frame < next_frame_val && frame < last_frame_val {
+                let last_line_val = match self.last_line {
+                    Some(ref vec) => { vec.get(i).unwrap() },
+                    None => &10,
+                };
+                let next_line_val = match self.next_line {
+                    Some(ref vec) => { vec.get(i).unwrap() },
+                    None => &10,
+                };
+                if frame < last_line_val && frame < next_line_val{
+                    risk += frame + 1;
+                    println!("Possible low point: ({}, {})", self.this_line_id, i);
+                }
+            }
+
+            last_frame = current_frame;
+            current_frame = next_frame;
+            next_frame = frames.next();
+        }
+        risk
+    }
     pub fn id(&self) -> usize{
         self.this_line_id
     }
@@ -57,11 +88,11 @@ impl GameBoard {
 }
 
 impl Iterator for GameBoard{
-    type Item = bool;
+    type Item = usize;
     fn next(&mut self) -> Option<Self::Item>{
         let out = match &self.this_line {
             //find low point
-            Some(_res) => Some(true),
+            Some(_res) => Some(self.find_low_points()),
             None => None,
         };
         println!("Line ID: {:?}\n\tLast Line: {:?}\n\tThis Line {:?}\n\tNext Line {:?}", self.id(), self.last_line(), self.this_line(), self.next_line());
