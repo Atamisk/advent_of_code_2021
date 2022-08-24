@@ -3,8 +3,8 @@ use std::io::{BufReader, Lines};
 use std::mem::swap;
 
 #[derive(Debug)]
-pub struct GameBoard {
-    handle: Lines<BufReader<File>>,
+pub struct GameBoard<T:Handle> {
+    handle: T,
     last_line: Option<Vec<usize>>,
     this_line: Option<Vec<usize>>,
     next_line: Option<Vec<usize>>,
@@ -23,8 +23,8 @@ impl Handle for Lines<BufReader<File>> {
     }
 }
 
-impl GameBoard {
-    pub fn new(mut handle: Lines<BufReader<File>>) -> Self{
+impl<T: Handle> GameBoard<T> {
+    pub fn new(mut handle: T) -> Self{
         let this_line = handle.pull_handle();
         let next_line = handle.pull_handle();
         Self{
@@ -87,7 +87,7 @@ impl GameBoard {
     }
 }
 
-impl Iterator for GameBoard{
+impl<T: Handle> Iterator for GameBoard<T>{
     type Item = usize;
     fn next(&mut self) -> Option<Self::Item>{
         let out = match &self.this_line {
