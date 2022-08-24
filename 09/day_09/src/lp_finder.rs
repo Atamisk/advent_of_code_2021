@@ -15,7 +15,7 @@ impl Handle for Lines<BufReader<File>> {
 }
 
 #[derive(Debug)]
-pub struct GameBoard<T:Handle> {
+pub struct LPFinder<T:Handle> {
     handle: T,
     last_line: Option<Vec<usize>>,
     this_line: Option<Vec<usize>>,
@@ -23,7 +23,7 @@ pub struct GameBoard<T:Handle> {
     this_line_id: usize,
 }
 
-impl<T: Handle> GameBoard<T> {
+impl<T: Handle> LPFinder<T> {
     pub fn new(mut handle: T) -> Self{
         let this_line = handle.pull_handle();
         let next_line = handle.pull_handle();
@@ -87,7 +87,7 @@ impl<T: Handle> GameBoard<T> {
     }
 }
 
-impl<T: Handle> Iterator for GameBoard<T>{
+impl<T: Handle> Iterator for LPFinder<T>{
     type Item = usize;
     fn next(&mut self) -> Option<Self::Item>{
         let out = match &self.this_line {
