@@ -2,15 +2,6 @@ use std::fs::File;
 use std::io::{BufReader, Lines};
 use std::mem::swap;
 
-#[derive(Debug)]
-pub struct GameBoard<T:Handle> {
-    handle: T,
-    last_line: Option<Vec<usize>>,
-    this_line: Option<Vec<usize>>,
-    next_line: Option<Vec<usize>>,
-    this_line_id: usize,
-}
-
 pub trait Handle{
     fn pull_handle(&mut self) -> Option<Vec<usize>>;
 }
@@ -21,6 +12,15 @@ impl Handle for Lines<BufReader<File>> {
             None => None,
         }
     }
+}
+
+#[derive(Debug)]
+pub struct GameBoard<T:Handle> {
+    handle: T,
+    last_line: Option<Vec<usize>>,
+    this_line: Option<Vec<usize>>,
+    next_line: Option<Vec<usize>>,
+    this_line_id: usize,
 }
 
 impl<T: Handle> GameBoard<T> {
