@@ -25,8 +25,16 @@ impl FullGameBoard {
     pub fn increment(&mut self) {
         self.this_line += 1;
     }
-    fn find_line_low_points(&self) -> Option<usize> {
-        if let Some(line) = self.board.get(self.this_line) {
+    pub fn find_all_low_points(&self) -> Answers {
+        let max_idx = self.board.len();
+        let risk = (0..max_idx).map(|x| self.find_line_low_points(x).unwrap());
+        Answers{
+            part_one:1,
+            part_two:2,
+        }
+    }
+    fn find_line_low_points(&self, idx: usize) -> Option<usize> {
+        if let Some(line) = self.board.get(idx) {
             let mut frames = line.iter().enumerate();
             let mut current_frame = frames.next();
             let mut next_frame = frames.next();
@@ -63,12 +71,13 @@ impl FullGameBoard {
     }
 }
 
-impl Iterator for FullGameBoard{
-    type Item = usize;
-    fn next(&mut self) -> Option<Self::Item>{
-        let out = self.find_line_low_points();
-        //increment board. 
-        self.increment();
-        out
+pub struct Answers {
+    part_one: usize,
+    part_two: usize
+}
+
+impl Answers {
+    pub fn part_one(&self) -> usize {
+        self.part_one
     }
 }
