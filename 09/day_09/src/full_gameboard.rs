@@ -27,9 +27,9 @@ impl FullGameBoard {
     }
     pub fn find_all_low_points(&self) -> Answers {
         let max_idx = self.board.len();
-        let risk = (0..max_idx).map(|x| self.find_line_low_points(x).unwrap());
+        let risk: usize = (0..max_idx).map(|x| self.find_line_low_points(x).unwrap()).sum();
         Answers{
-            part_one:1,
+            part_one:risk,
             part_two:2,
         }
     }
@@ -45,18 +45,18 @@ impl FullGameBoard {
                 let last_frame_val = last_frame.unwrap_or((0, &10)).1;
                 if frame < next_frame_val && frame < last_frame_val {
                     let last_line_val = {
-                        match self.this_line.checked_sub(1) {
+                        match idx.checked_sub(1) {
                             Some(last_line) => self.board.get(last_line).unwrap().get(i).unwrap(),
                             None => &10
                         }
                     };
-                    let next_line_val = match self.board.get(self.this_line + 1) {
+                    let next_line_val = match self.board.get(idx + 1) {
                         Some(ref vec) => { vec.get(i).unwrap() },
                         None => &10,
                     };
                     if frame < last_line_val && frame < next_line_val{
                         risk += frame + 1;
-                        println!("Possible low point: ({}, {})", self.this_line, i);
+                        println!("Possible low point: ({}, {})", idx, i);
                     }
                 }
 
