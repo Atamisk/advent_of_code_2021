@@ -1,11 +1,9 @@
 use std::fs::File;
 use std::io::{BufReader, Lines};
 
-use crate::lp_finder::Handle;
-
+#[derive(Debug)]
 pub struct FullGameBoard {
     board: Vec<Vec<usize>>,
-    handle_pos: usize,
 }
 
 impl FullGameBoard {
@@ -20,18 +18,10 @@ impl FullGameBoard {
         }
         Self{
             board,
-            handle_pos: 0,
         }
+    }
+    pub fn get(&self, idx: usize) -> Option<&Vec<usize>> {
+        self.board.get(idx)
     }
 }
 
-impl Handle for FullGameBoard {
-    fn pull_handle(&mut self) -> Option<Vec<usize>> {
-        let ret = match self.board.get(self.handle_pos){
-            Some(line) => Some(line.clone()),
-            None => None
-        };
-        self.handle_pos += 1;
-        ret
-    }
-}
