@@ -1,8 +1,5 @@
 use read_file;
 
-mod lp_finder;
-use lp_finder::*;
-
 mod full_gameboard;
 use full_gameboard::*;
 
