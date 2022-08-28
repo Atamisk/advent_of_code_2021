@@ -25,10 +25,10 @@ impl FullGameBoard {
     pub fn increment(&mut self) {
         self.this_line += 1;
     }
-    pub fn find_all_low_points(&self) -> Answers {
+    pub fn find_all_low_points(&self) -> LPInfo {
         let max_idx = self.board.len();
         let risk: usize = (0..max_idx).map(|x| self.find_line_low_points(x).unwrap()).sum();
-        Answers{
+        LPInfo{
             part_one:risk,
             part_two:2,
         }
@@ -71,12 +71,12 @@ impl FullGameBoard {
     }
 }
 
-pub struct Answers {
+pub struct LPInfo {
     part_one: usize,
     part_two: usize
 }
 
-impl Answers {
+impl LPInfo {
     pub fn part_one(&self) -> usize {
         self.part_one
     }
