@@ -25,7 +25,7 @@ impl FullGameBoard {
     pub fn increment(&mut self) {
         self.this_line += 1;
     }
-    fn find_low_points(&self) -> Option<usize> {
+    fn find_line_low_points(&self) -> Option<usize> {
         if let Some(line) = self.board.get(self.this_line) {
             let mut frames = line.iter().enumerate();
             let mut current_frame = frames.next();
@@ -66,7 +66,7 @@ impl FullGameBoard {
 impl Iterator for FullGameBoard{
     type Item = usize;
     fn next(&mut self) -> Option<Self::Item>{
-        let out = self.find_low_points();
+        let out = self.find_line_low_points();
         //increment board. 
         self.increment();
         out
