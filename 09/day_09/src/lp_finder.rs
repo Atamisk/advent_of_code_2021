@@ -2,13 +2,13 @@
 use crate::full_gameboard::*;
 
 #[derive(Debug)]
-pub struct LPFinder {
-    board: FullGameBoard,
+pub struct LPFinder<'a> {
+    board: &'a FullGameBoard,
     this_line: usize,
 }
 
-impl LPFinder {
-    pub fn new(board: FullGameBoard) -> Self{
+impl<'a> LPFinder<'a> {
+    pub fn new(board: &'a FullGameBoard) -> Self{
         Self{
             board,
             this_line: 0,
@@ -55,7 +55,7 @@ impl LPFinder {
     }
 }
 
-impl Iterator for LPFinder{
+impl<'a> Iterator for LPFinder<'a>{
     type Item = usize;
     fn next(&mut self) -> Option<Self::Item>{
         let out = self.find_low_points();
