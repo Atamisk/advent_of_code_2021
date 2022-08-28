@@ -4,7 +4,6 @@ use std::io::{BufReader, Lines};
 #[derive(Debug)]
 pub struct FullGameBoard {
     board: Vec<Vec<usize>>,
-    this_line: usize,
 }
 
 impl FullGameBoard {
@@ -19,11 +18,7 @@ impl FullGameBoard {
         }
         Self{
             board,
-            this_line: 0,
         }
-    }
-    pub fn increment(&mut self) {
-        self.this_line += 1;
     }
     pub fn find_all_low_points(&self) -> LPInfo {
         let max_idx = self.board.len();
