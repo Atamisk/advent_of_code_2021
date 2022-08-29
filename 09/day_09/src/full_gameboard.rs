@@ -1,5 +1,7 @@
 use std::fs::File;
 use std::io::{BufReader, Lines};
+use std::collections::HashSet;
+use std::convert::{TryInto, TryFrom};
 
 #[derive(Debug)]
 pub struct FullGameBoard {
@@ -24,8 +26,8 @@ impl FullGameBoard {
         let max_idx = self.board.len();
         let risk: usize = (0..max_idx).map(|x| self.find_line_low_points(x).unwrap()).sum();
         LPInfo{
-            part_one:risk,
-            part_two:2,
+            risk,
+            biggest_basins:2,
         }
     }
     fn find_line_low_points(&self, idx: usize) -> Option<usize> {
@@ -64,15 +66,66 @@ impl FullGameBoard {
             None
         }
     }
+    pub fn get_basin_size(&self, coord: (usize, usize)) -> usize {
+        let mut visited: HashSet<(usize,usize)> = HashSet::from([coord]);
+        let mut stk: Vec<(usize, usize)> = vec![coord];
+        while let Some(frame) = stk.pop() {
+            let frame_val = self.get_val_coord(frame).unwrap();
+            let top = coord_offset(frame, (-1, 0));
+            let bot = coord_offset(frame, ( 1, 0));
+            let lft = coord_offset(frame, ( 0,-1));
+            let rgt = coord_offset(frame, ( 0, 1));
+            let neighbors: Vec<(usize, usize)> = [top, bot, lft, rgt].into_iter().filter_map(|x| *x).collect();
+            for neighbor in neighbors {
+                let neighbor_val = self.get_val_coord(neighbor);
+                if let Some(nval) = neighbor_val {
+                    if nval > frame_val && nval < 9 && visited.insert(neighbor) {
+                        stk.push(neighbor);
+                    }
+                }
+            }
+        }
+        visited.len()
+    }
+    fn get_val_coord(&self, coord: (usize, usize)) -> Option<usize> {
+        match self.board.get(coord.0) {
+            Some(vec) => vec.get(coord.1).cloned(),
+            None => None
+        }
+    }
 }
 
 pub struct LPInfo {
-    part_one: usize,
-    part_two: usize
+    risk: usize,
+    biggest_basins: usize
 }
 
 impl LPInfo {
     pub fn part_one(&self) -> usize {
-        self.part_one
+        self.risk
+    }
+}
+
+fn coord_offset(coord: (usize, usize), offset: (isize, isize)) -> Option<(usize, usize)> {
+    let new_x = if offset.0 < 0 {
+        let offset_x:usize = offset.0.abs().try_into().unwrap();
+        coord.0.checked_sub(offset_x)
+    } else {
+        Some(coord.0 + usize::try_from(offset.0).unwrap())
+    };
+    let new_y = if offset.1 < 0 {
+        let offset_y:usize = offset.1.abs().try_into().unwrap();
+        coord.1.checked_sub(offset_y)
+    } else {
+        Some(coord.1 + usize::try_from(offset.1).unwrap())
+    };
+    match new_x {
+        Some(x) => {
+            match new_y {
+                Some(y) => Some((x,y)),
+                None => None
+            }
+        },
+        None => None,
     }
 }
