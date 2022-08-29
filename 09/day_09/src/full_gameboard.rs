@@ -24,19 +24,25 @@ impl FullGameBoard {
     }
     pub fn find_all_low_points(&self) -> LPInfo {
         let max_idx = self.board.len();
-        let risk: usize = (0..max_idx).map(|x| self.find_line_low_points(x).unwrap()).sum();
+        let mut risk = 0;
+        let mut basins: Vec<usize> = Vec::new();
+        for lpi in (0..max_idx).map(|x| self.find_line_low_points(x).unwrap()) {
+            risk += lpi.risk();
+            basins.append(&mut lpi.basins());
+        }
         LPInfo{
             risk,
-            biggest_basins:vec![2],
+            basins,
         }
     }
-    fn find_line_low_points(&self, idx: usize) -> Option<usize> {
+    fn find_line_low_points(&self, idx: usize) -> Option<LPInfo> {
         if let Some(line) = self.board.get(idx) {
             let mut frames = line.iter().enumerate();
             let mut current_frame = frames.next();
             let mut next_frame = frames.next();
             let mut last_frame: Option<(usize, &usize)> = None;
             let mut risk = 0;
+            let mut basins: Vec<usize> = Vec::new();
             while let Some((i, frame)) = current_frame {
                 let next_frame_val = next_frame.unwrap_or((0, &10)).1;
                 let last_frame_val = last_frame.unwrap_or((0, &10)).1;
@@ -54,6 +60,7 @@ impl FullGameBoard {
                     if frame < last_line_val && frame < next_line_val{
                         risk += frame + 1;
                         let basin = self.get_basin_size((idx, i));
+                        basins.push(basin);
                         println!("Possible low point: ({}, {}), basin size: {}", idx, i, basin);
                     }
                 }
@@ -62,7 +69,10 @@ impl FullGameBoard {
                 current_frame = next_frame;
                 next_frame = frames.next();
             }
-            Some(risk)
+            Some(LPInfo{
+                risk,
+                basins
+            })
         } else {
             None
         }
@@ -98,12 +108,15 @@ impl FullGameBoard {
 
 pub struct LPInfo {
     risk: usize,
-    biggest_basins: Vec<usize>,
+    basins: Vec<usize>,
 }
 
 impl LPInfo {
-    pub fn part_one(&self) -> usize {
+    pub fn risk(&self) -> usize {
         self.risk
+    }
+    pub fn basins(&self) -> Vec<usize> {
+        self.basins.clone()
     }
 }
 
