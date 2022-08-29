@@ -8,7 +8,5 @@ fn main() {
     let file_lines = read_file::get_lines(&fname);
     let gboard = FullGameBoard::new(file_lines);
     let sm = gboard.find_all_low_points();
-    let basin = gboard.get_basin_size((0, 9));
     println!("Part One Answer: {}", sm.part_one());
-    println!("Test Basin Size: {}", basin)
 }

@@ -27,7 +27,7 @@ impl FullGameBoard {
         let risk: usize = (0..max_idx).map(|x| self.find_line_low_points(x).unwrap()).sum();
         LPInfo{
             risk,
-            biggest_basins:2,
+            biggest_basins:vec![2],
         }
     }
     fn find_line_low_points(&self, idx: usize) -> Option<usize> {
@@ -53,7 +53,8 @@ impl FullGameBoard {
                     };
                     if frame < last_line_val && frame < next_line_val{
                         risk += frame + 1;
-                        println!("Possible low point: ({}, {})", idx, i);
+                        let basin = self.get_basin_size((idx, i));
+                        println!("Possible low point: ({}, {}), basin size: {}", idx, i, basin);
                     }
                 }
 
@@ -97,7 +98,7 @@ impl FullGameBoard {
 
 pub struct LPInfo {
     risk: usize,
-    biggest_basins: usize
+    biggest_basins: Vec<usize>,
 }
 
 impl LPInfo {
