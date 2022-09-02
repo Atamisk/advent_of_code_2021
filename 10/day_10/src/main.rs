@@ -18,10 +18,14 @@ fn make_mate_map() -> HashMap<char, char> {
     HashMap::from([('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')])
 }
 
-fn get_score(map: HashMap<char, usize>, line: &str) -> usize {
+fn get_score(mate_map: HashMap<char, char>, point_map: HashMap<char, usize>, line: &str) -> usize {
     let mut stk: Vec<char> = Vec::new();
     for chr in line.chars() {
-
+        if let Some(_) = mate_map.get(&chr){
+            stk.push(chr);
+        } else if let Some(points) = point_map.get(&chr) {
+            println!("Closing bracket detected.");
+        }
     }
     42
 }
